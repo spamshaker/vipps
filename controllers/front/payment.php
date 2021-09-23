@@ -27,7 +27,7 @@
 /**
  * @since 1.5.0
  */
-class BankwirePaymentModuleFrontController extends ModuleFrontController
+class VippsPaymentModuleFrontController extends ModuleFrontController
 {
 	public $ssl = true;
 	public $display_column_left = false;

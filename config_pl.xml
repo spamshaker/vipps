@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <module>
-	<name>bankwire</name>
+	<name>vipps</name>
 	<displayName><![CDATA[Przelew na konto]]></displayName>
 	<version><![CDATA[1.1.1]]></version>
 	<description><![CDATA[Akceptuj płatności za swoje produkty za pomocą przelewu na konto.]]></description>

@@ -27,7 +27,7 @@
 /**
  * @since 1.5.0
  */
-class BankwireValidationModuleFrontController extends ModuleFrontController
+class VippsValidationModuleFrontController extends ModuleFrontController
 {
 	/**
 	 * @see FrontController::postProcess()
@@ -41,7 +41,7 @@ class BankwireValidationModuleFrontController extends ModuleFrontController
 		// Check that this payment option is still available in case the customer changed his address just before the end of the checkout process
 		$authorized = false;
 		foreach (Module::getPaymentModules() as $module)
-			if ($module['name'] == 'bankwire')
+			if ($module['name'] == 'vipps')
 			{
 				$authorized = true;
 				break;
@@ -56,12 +56,12 @@ class BankwireValidationModuleFrontController extends ModuleFrontController
 		$currency = $this->context->currency;
 		$total = (float)$cart->getOrderTotal(true, Cart::BOTH);
 		$mailVars = array(
-			'{bankwire_owner}' => Configuration::get('BANK_WIRE_OWNER'),
-			'{bankwire_details}' => nl2br(Configuration::get('BANK_WIRE_DETAILS')),
-			'{bankwire_address}' => nl2br(Configuration::get('BANK_WIRE_ADDRESS'))
+			'{vipps_owner}' => Configuration::get('VIPPS_OWNER'),
+			'{vipps_details}' => nl2br(Configuration::get('VIPPS_DETAILS')),
+			'{vipps_address}' => nl2br(Configuration::get('VIPPS_ADDRESS'))
 		);
 
-		$this->module->validateOrder($cart->id, Configuration::get('PS_OS_BANKWIRE'), $total, $this->module->displayName, NULL, $mailVars, (int)$currency->id, false, $customer->secure_key);
+		$this->module->validateOrder($cart->id, Configuration::get('PS_OS_VIPPS'), $total, $this->module->displayName, NULL, $mailVars, (int)$currency->id, false, $customer->secure_key);
 		Tools::redirect('index.php?controller=order-confirmation&id_cart='.$cart->id.'&id_module='.$this->module->id.'&id_order='.$this->module->currentOrder.'&key='.$customer->secure_key);
 	}
 }

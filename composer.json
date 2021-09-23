@@ -1,7 +1,7 @@
 {
-  "name": "prestashop/bankwire",
-  "description": "PrestaShop module bankwire",
-  "homepage": "https://github.com/PrestaShop/bankwire",
+  "name": "prestashop/vipps",
+  "description": "PrestaShop module vipps",
+  "homepage": "https://github.com/PrestaShop/vipps",
   "license": "AFL - Academic Free License (AFL 3.0)",
   "authors": [
     {

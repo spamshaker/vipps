@@ -27,7 +27,7 @@
 if (!defined('_PS_VERSION_'))
 	exit;
 
-class BankWire extends PaymentModule
+class Vipps extends PaymentModule
 {
 	protected $_html = '';
 	protected $_postErrors = array();
@@ -38,7 +38,7 @@ class BankWire extends PaymentModule
 	public $extra_mail_vars;
 	public function __construct()
 	{
-		$this->name = 'bankwire';
+		$this->name = 'vipps';
 		$this->tab = 'payments_gateways';
 		$this->version = '1.1.2';
 		$this->author = 'PrestaShop';
@@ -48,19 +48,19 @@ class BankWire extends PaymentModule
 		$this->currencies = true;
 		$this->currencies_mode = 'checkbox';
 
-		$config = Configuration::getMultiple(array('BANK_WIRE_DETAILS', 'BANK_WIRE_OWNER', 'BANK_WIRE_ADDRESS'));
-		if (!empty($config['BANK_WIRE_OWNER']))
-			$this->owner = $config['BANK_WIRE_OWNER'];
-		if (!empty($config['BANK_WIRE_DETAILS']))
-			$this->details = $config['BANK_WIRE_DETAILS'];
-		if (!empty($config['BANK_WIRE_ADDRESS']))
-			$this->address = $config['BANK_WIRE_ADDRESS'];
+		$config = Configuration::getMultiple(array('VIPPS_DETAILS', 'VIPPS_OWNER', 'VIPPS_ADDRESS'));
+		if (!empty($config['VIPPS_OWNER']))
+			$this->owner = $config['VIPPS_OWNER'];
+		if (!empty($config['VIPPS_DETAILS']))
+			$this->details = $config['VIPPS_DETAILS'];
+		if (!empty($config['VIPPS_ADDRESS']))
+			$this->address = $config['VIPPS_ADDRESS'];
 
 		$this->bootstrap = true;
 		parent::__construct();
 
-		$this->displayName = $this->l('Bank wire');
-		$this->description = $this->l('Accept payments for your products via bank wire transfer.');
+		$this->displayName = $this->l('Vipps');
+		$this->description = $this->l('Accept payments for your products via vipps transfer.');
 		$this->confirmUninstall = $this->l('Are you sure about removing these details?');
 		if (!isset($this->owner) || !isset($this->details) || !isset($this->address))
 			$this->warning = $this->l('Account owner and account details must be configured before using this module.');
@@ -68,9 +68,9 @@ class BankWire extends PaymentModule
 			$this->warning = $this->l('No currency has been set for this module.');
 
 		$this->extra_mail_vars = array(
-										'{bankwire_owner}' => Configuration::get('BANK_WIRE_OWNER'),
-										'{bankwire_details}' => nl2br(Configuration::get('BANK_WIRE_DETAILS')),
-										'{bankwire_address}' => nl2br(Configuration::get('BANK_WIRE_ADDRESS'))
+										'{vipps_owner}' => Configuration::get('VIPPS_OWNER'),
+										'{vipps_details}' => nl2br(Configuration::get('VIPPS_DETAILS')),
+										'{vipps_address}' => nl2br(Configuration::get('VIPPS_ADDRESS'))
 										);
 	}
 
@@ -83,9 +83,9 @@ class BankWire extends PaymentModule
 
 	public function uninstall()
 	{
-		if (!Configuration::deleteByName('BANK_WIRE_DETAILS')
-				|| !Configuration::deleteByName('BANK_WIRE_OWNER')
-				|| !Configuration::deleteByName('BANK_WIRE_ADDRESS')
+		if (!Configuration::deleteByName('VIPPS_DETAILS')
+				|| !Configuration::deleteByName('VIPPS_OWNER')
+				|| !Configuration::deleteByName('VIPPS_ADDRESS')
 				|| !parent::uninstall())
 			return false;
 		return true;
@@ -95,9 +95,9 @@ class BankWire extends PaymentModule
 	{
 		if (Tools::isSubmit('btnSubmit'))
 		{
-			if (!Tools::getValue('BANK_WIRE_DETAILS'))
+			if (!Tools::getValue('VIPPS_DETAILS'))
 				$this->_postErrors[] = $this->l('Account details are required.');
-			elseif (!Tools::getValue('BANK_WIRE_OWNER'))
+			elseif (!Tools::getValue('VIPPS_OWNER'))
 				$this->_postErrors[] = $this->l('Account owner is required.');
 		}
 	}
@@ -106,14 +106,14 @@ class BankWire extends PaymentModule
 	{
 		if (Tools::isSubmit('btnSubmit'))
 		{
-			Configuration::updateValue('BANK_WIRE_DETAILS', Tools::getValue('BANK_WIRE_DETAILS'));
-			Configuration::updateValue('BANK_WIRE_OWNER', Tools::getValue('BANK_WIRE_OWNER'));
-			Configuration::updateValue('BANK_WIRE_ADDRESS', Tools::getValue('BANK_WIRE_ADDRESS'));
+			Configuration::updateValue('VIPPS_DETAILS', Tools::getValue('VIPPS_DETAILS'));
+			Configuration::updateValue('VIPPS_OWNER', Tools::getValue('VIPPS_OWNER'));
+			Configuration::updateValue('VIPPS_ADDRESS', Tools::getValue('VIPPS_ADDRESS'));
 		}
 		$this->_html .= $this->displayConfirmation($this->l('Settings updated'));
 	}
 
-	protected function _displayBankWire()
+	protected function _displayVipps()
 	{
 		return $this->display(__FILE__, 'infos.tpl');
 	}
@@ -132,7 +132,7 @@ class BankWire extends PaymentModule
 		else
 			$this->_html .= '<br />';
 
-		$this->_html .= $this->_displayBankWire();
+		$this->_html .= $this->_displayVipps();
 		$this->_html .= $this->renderForm();
 
 		return $this->_html;
@@ -162,8 +162,8 @@ class BankWire extends PaymentModule
 			return;
 
 		$payment_options = array(
-			'cta_text' => $this->l('Pay by Bank Wire'),
-			'logo' => Media::getMediaPath(_PS_MODULE_DIR_.$this->name.'/bankwire.jpg'),
+			'cta_text' => $this->l('Pay by Vipps'),
+			'logo' => Media::getMediaPath(_PS_MODULE_DIR_.$this->name.'/vipps.jpg'),
 			'action' => $this->context->link->getModuleLink($this->name, 'validation', array(), true)
 		);
 
@@ -176,13 +176,13 @@ class BankWire extends PaymentModule
 			return;
 
 		$state = $params['objOrder']->getCurrentState();
-		if (in_array($state, array(Configuration::get('PS_OS_BANKWIRE'), Configuration::get('PS_OS_OUTOFSTOCK'), Configuration::get('PS_OS_OUTOFSTOCK_UNPAID'))))
+		if (in_array($state, array(Configuration::get('PS_OS_VIPPS'), Configuration::get('PS_OS_OUTOFSTOCK'), Configuration::get('PS_OS_OUTOFSTOCK_UNPAID'))))
 		{
 			$this->smarty->assign(array(
 				'total_to_pay' => Tools::displayPrice($params['total_to_pay'], $params['currencyObj'], false),
-				'bankwireDetails' => Tools::nl2br($this->details),
-				'bankwireAddress' => Tools::nl2br($this->address),
-				'bankwireOwner' => $this->owner,
+				'vippsDetails' => Tools::nl2br($this->details),
+				'vippsAddress' => Tools::nl2br($this->address),
+				'vippsOwner' => $this->owner,
 				'status' => 'ok',
 				'id_order' => $params['objOrder']->id
 			));
@@ -218,20 +218,20 @@ class BankWire extends PaymentModule
 					array(
 						'type' => 'text',
 						'label' => $this->l('Account owner'),
-						'name' => 'BANK_WIRE_OWNER',
+						'name' => 'VIPPS_OWNER',
 						'required' => true
 					),
 					array(
 						'type' => 'textarea',
 						'label' => $this->l('Details'),
-						'name' => 'BANK_WIRE_DETAILS',
-						'desc' => $this->l('Such as bank branch, IBAN number, BIC, etc.'),
+						'name' => 'VIPPS_DETAILS',
+						'desc' => $this->l('Such as Vipps number, etc.'),
 						'required' => true
 					),
 					array(
 						'type' => 'textarea',
-						'label' => $this->l('Bank address'),
-						'name' => 'BANK_WIRE_ADDRESS',
+						'label' => $this->l('Vipps address'),
+						'name' => 'VIPPS_ADDRESS',
 						'required' => true
 					),
 				),
@@ -265,9 +265,9 @@ class BankWire extends PaymentModule
 	public function getConfigFieldsValues()
 	{
 		return array(
-			'BANK_WIRE_DETAILS' => Tools::getValue('BANK_WIRE_DETAILS', Configuration::get('BANK_WIRE_DETAILS')),
-			'BANK_WIRE_OWNER' => Tools::getValue('BANK_WIRE_OWNER', Configuration::get('BANK_WIRE_OWNER')),
-			'BANK_WIRE_ADDRESS' => Tools::getValue('BANK_WIRE_ADDRESS', Configuration::get('BANK_WIRE_ADDRESS')),
+			'VIPPS_DETAILS' => Tools::getValue('VIPPS_DETAILS', Configuration::get('VIPPS_DETAILS')),
+			'VIPPS_OWNER' => Tools::getValue('VIPPS_OWNER', Configuration::get('VIPPS_OWNER')),
+			'VIPPS_ADDRESS' => Tools::getValue('VIPPS_ADDRESS', Configuration::get('VIPPS_ADDRESS')),
 		);
 	}
 }

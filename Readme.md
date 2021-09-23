@@ -1,4 +1,4 @@
-# Bank wire
+# Vipps
 
 ---
 
@@ -10,4 +10,4 @@ It has been remade for PrestaShop 1.7: https://github.com/PrestaShop/ps_wirepaym
 
 ## About
 
-Accept payments for your products via bank wire transfer in PrestaShop 1.6.
+Accept payments for your products via vipps transfer in PrestaShop 1.6.
